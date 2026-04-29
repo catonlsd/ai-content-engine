@@ -1,5 +1,5 @@
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
 import json
@@ -10,35 +10,47 @@ from prompt_builder import (
     build_outline_prompt,
     build_structured_blog_prompt,
     build_seo_analysis_prompt,
-    build_linkedin_post_prompt  
+    build_linkedin_post_prompt,
 )
 
-app = FastAPI(title="AI SEO Blog Generator")
+app = FastAPI(
+    title="AI SEO Content Engine",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json",
+)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3000",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
 class BlogRequest(BaseModel):
     topic: str
     keywords: List[str]
     tone: str = "professional"
 
+
 class AnalyzeRequest(BaseModel):
     blog: str
     keywords: List[str]
+
 
 class LinkedInRequest(BaseModel):
     topic: str
     tone: str = "professional"
 
+
 def extract_json(text: str):
     try:
         return json.loads(text)
-    except:
+    except Exception:
         pass
 
     match = re.search(r"\{.*\}", text, re.DOTALL)
@@ -48,18 +60,19 @@ def extract_json(text: str):
     else:
         json_text = "{" + text.strip().strip(",") + "}"
 
-    # Fix common issues
     json_text = json_text.replace("\n", "\\n")
     json_text = json_text.replace("\r", "\\r")
     json_text = json_text.replace("\t", "\\t")
 
     return json.loads(json_text)
 
+
 @app.get("/")
+@app.head("/")
 def home():
     return {
-        "message": "AI SEO Blog Generator API is running",
-        "docs": "Go to /docs to test the API"
+        "message": "AI SEO Content Engine API is running",
+        "docs": "/docs",
     }
 
 
@@ -74,10 +87,7 @@ def test_ai():
 def generate_outline(request: BlogRequest):
     prompt = build_outline_prompt(request.topic, request.keywords)
     outline = generate_text(prompt)
-
-    return {
-        "outline": outline
-    }
+    return {"outline": outline}
 
 
 @app.post("/generate-blog")
@@ -85,12 +95,12 @@ def generate_blog(request: BlogRequest):
     prompt = build_structured_blog_prompt(
         request.topic,
         request.keywords,
-        request.tone
+        request.tone,
     )
 
     max_retries = 3
 
-    for attempt in range(max_retries):
+    for _ in range(max_retries):
         raw_result = generate_text(prompt)
 
         try:
@@ -102,8 +112,10 @@ def generate_blog(request: BlogRequest):
                 "blog": parsed_result.get("blog"),
                 "seo_score": parsed_result.get("seo_score"),
                 "seo_explanation": parsed_result.get("seo_explanation"),
-                "improvement_suggestions": parsed_result.get("improvement_suggestions"),
-                "keywords_used": parsed_result.get("keywords_used")
+                "improvement_suggestions": parsed_result.get(
+                    "improvement_suggestions"
+                ),
+                "keywords_used": parsed_result.get("keywords_used"),
             }
 
         except Exception:
@@ -111,16 +123,13 @@ def generate_blog(request: BlogRequest):
 
     return {
         "error": "Failed after retries",
-        "message": "LLM output could not be parsed"
+        "message": "LLM output could not be parsed",
     }
+
 
 @app.post("/analyze-seo")
 def analyze_seo(request: AnalyzeRequest):
-    prompt = build_seo_analysis_prompt(
-        request.blog,
-        request.keywords
-    )
-
+    prompt = build_seo_analysis_prompt(request.blog, request.keywords)
     raw_result = generate_text(prompt)
 
     try:
@@ -129,20 +138,22 @@ def analyze_seo(request: AnalyzeRequest):
         return {
             "seo_score": parsed_result.get("seo_score"),
             "seo_explanation": parsed_result.get("seo_explanation"),
-            "improvement_suggestions": parsed_result.get("improvement_suggestions")
+            "improvement_suggestions": parsed_result.get(
+                "improvement_suggestions"
+            ),
         }
 
     except Exception as e:
         return {
             "error": "Failed to analyze SEO",
             "details": str(e),
-            "raw_output": raw_result
+            "raw_output": raw_result,
         }
+
 
 @app.post("/generate-linkedin")
 def generate_linkedin(request: LinkedInRequest):
     prompt = build_linkedin_post_prompt(request.topic, request.tone)
-
     raw_result = generate_text(prompt)
 
     try:
@@ -153,12 +164,14 @@ def generate_linkedin(request: LinkedInRequest):
             "post": parsed_result.get("post"),
             "hashtags": parsed_result.get("hashtags"),
             "engagement_score": parsed_result.get("engagement_score"),
-            "improvement_suggestions": parsed_result.get("improvement_suggestions")
+            "improvement_suggestions": parsed_result.get(
+                "improvement_suggestions"
+            ),
         }
 
     except Exception as e:
         return {
             "error": "LinkedIn post output could not be parsed",
             "details": str(e),
-            "raw_output": raw_result
+            "raw_output": raw_result,
         }
