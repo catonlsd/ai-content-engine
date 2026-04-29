@@ -23,7 +23,8 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000",
+    "http://localhost:3000",
+    "https://ai-content-engine-k23xqqhts-catonlsds-projects.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
