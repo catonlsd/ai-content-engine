@@ -22,11 +22,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-# -------------------------------
-# Request Schema
-# -------------------------------
 class BlogRequest(BaseModel):
     topic: str
     keywords: List[str]
@@ -40,9 +35,6 @@ class LinkedInRequest(BaseModel):
     topic: str
     tone: str = "professional"
 
-# -------------------------------
-# Helper: Extract JSON safely
-# -------------------------------
 def extract_json(text: str):
     try:
         return json.loads(text)
@@ -62,11 +54,6 @@ def extract_json(text: str):
     json_text = json_text.replace("\t", "\\t")
 
     return json.loads(json_text)
-
-
-# -------------------------------
-# Routes
-# -------------------------------
 
 @app.get("/")
 def home():
