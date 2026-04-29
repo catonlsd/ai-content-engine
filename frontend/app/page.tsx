@@ -28,7 +28,7 @@ export default function Home() {
     setResult(null);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/generate-blog", {
+      const res = await fetch("https://ai-content-engine-backend-9f1x.onrender.com/generate-blog", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -52,7 +52,7 @@ export default function Home() {
     setAnalysisResult(null);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/analyze-seo", {
+      const res = await fetch("https://ai-content-engine-backend-9f1x.onrender.com/analyze-seo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -75,7 +75,7 @@ export default function Home() {
     setLinkedinResult(null);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/generate-linkedin", {
+      const res = await fetch("https://ai-content-engine-backend-9f1x.onrender.com/generate-linkedin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
