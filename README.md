@@ -42,7 +42,7 @@ https://ai-content-engine-backend-9f1x.onrender.com/docs
 
 # 📸 Screenshots
 
-## Dashboard
+## LinkedIn Post Generator
 
 ![Dashboard](screenshots/dashboard.png)
 
