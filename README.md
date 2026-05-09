@@ -20,8 +20,6 @@ https://ai-content-engine-alpha.vercel.app/
 ### Backend API
 https://ai-content-engine-backend-9f1x.onrender.com
 
----
-
 API Documentation
 https://ai-content-engine-backend-9f1x.onrender.com/docs
 ---
