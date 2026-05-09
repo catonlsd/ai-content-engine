@@ -211,7 +211,7 @@ export default function Home() {
       <section className="mx-auto max-w-6xl px-6 py-12">
         <div className="mb-10 text-center">
           <h1 className="text-5xl font-bold tracking-tight">
-            AI SEO Content Engine
+            AI Content Engine
           </h1>
           <p className="mt-4 text-gray-400">
             Generate SEO blogs, analyze content, and create LinkedIn posts with
